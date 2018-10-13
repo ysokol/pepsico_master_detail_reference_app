@@ -41,6 +41,7 @@
 		}
 	},
 	"sap.ui5": {
+		"handleValidation": true,
 		"rootView": {
 			"viewName": "com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.view.App",
 			"type": "XML",
@@ -50,13 +51,13 @@
 		"dependencies": {
 			"minUI5Version": "1.42.0",
 			"libs": {
-				"sap.ui.core": {},
-				"sap.m": {},
-				"sap.f": {},
-				"sap.ushell": {},
 				"sap.collaboration": {
 					"lazy": true
-				}
+				},
+				"sap.f": {},
+				"sap.m": {},
+				"sap.ui.core": {},
+				"sap.ushell": {}
 			}
 		},
 		"contentDensities": {
@@ -72,7 +73,7 @@
 			},
 			"": {
 				"dataSource": "mainService",
-				"preload": true
+				"preload": false
 			}
 		},
 		"routing": {

@@ -19,6 +19,32 @@ sap.ui.define([
 					});
 				oModel.setDefaultBindingMode("OneWay");
 				return oModel;
+			},
+			
+			createTransportationViewModel : function () {
+				return new JSONModel({
+					TransportationListParams: {
+						Filters: [],
+						Sorters: [],
+						GroupBy: []
+					},
+					TransportationDetails: {
+						IsEditMode: false,
+						TransportationPath: ''
+					},
+					NewTransportationDetails: {
+						Region: "",
+						RegionDescription: "",
+						ShippingLocationKey: "",
+						Description: "",
+						RegionList: [
+							{Region: "77", RegionDescription: "gorod Moskva"},
+							{Region: "46", RegionDescription: "Kurskaya oblast"},
+							{Region: "50", RegionDescription: "Moscowskaya oblast"}
+						],
+						ShipFromList: []
+					}
+				});
 			}
 		};
 

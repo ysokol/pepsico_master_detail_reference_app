@@ -1,17 +1,20 @@
 /* global document */
+jQuery.sap.registerModulePath("com.pepsico.core", "/ext-resources/pepsico_core_library/src/"); // "/ext-resources/pepsico_core_library/src/""
 sap.ui.define([
 		"sap/ui/core/UIComponent",
 		"sap/ui/Device",
 		"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/model/models",
 		"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/controller/ListSelector",
-		"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/controller/ErrorHandler"
-	], function (UIComponent, Device, models, ListSelector, ErrorHandler) {
+		"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/controller/ErrorHandler",
+		"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/model/TransportationService"
+	], function (UIComponent, Device, models, ListSelector, ErrorHandler, TransportationService) {
 		"use strict";
 
 		return UIComponent.extend("com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.Component", {
 
 			metadata : {
-				manifest : "json"
+				manifest : "json",
+				handleValidation  : true,
 			},
 
 			/**
@@ -21,13 +24,19 @@ sap.ui.define([
 			 * @override
 			 */
 			init : function () {
+				this.setModel(models.createDeviceModel(), "device");
+				this.setModel(models.createFLPModel(), "FLP");
+				this.setModel(models.createTransportationViewModel(), "transportation");
+				
 				this.oListSelector = new ListSelector();
 				this._oErrorHandler = new ErrorHandler(this);  
-
-				// set the device model
-				this.setModel(models.createDeviceModel(), "device");
-				// set the FLP model
-				this.setModel(models.createFLPModel(), "FLP");
+				this._oTransportationService = new TransportationService({
+					oODataModel: this.getModel(),
+					oTransportationViewModel: this.getModel("transportation"),
+				});
+				this._oTransportationService.init();
+				
+				
 
 				// call the base component's init function and create the App view
 				UIComponent.prototype.init.apply(this, arguments);

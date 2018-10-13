@@ -125,14 +125,19 @@ sap.ui.define([
 				// If the view was not bound yet its not busy, only if the binding requests data it is set to busy again
 				oViewModel.setProperty("/busy", false);
 
+				debugger;
 				this.getView().bindElement({
 					path : sObjectPath,
+					mode: sap.ui.model.BindingMode.TwoWay,
+					suspended: true,
 					events: {
 						change : this._onBindingChange.bind(this),
 						dataRequested : function () {
+							alert("dataRequested");
 							oViewModel.setProperty("/busy", true);
 						},
 						dataReceived: function () {
+							alert("dataReceived");
 							oViewModel.setProperty("/busy", false);
 						}
 					}
