@@ -4,7 +4,7 @@ sap.ui.define([
 	"use strict";
 
 	function getFrameUrl (sHash, sUrlParameters) {
-		var sUrl = jQuery.sap.getResourcePath("com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/app", ".html");
+		var sUrl = jQuery.sap.getResourcePath("com/pepsico/dev/reference/masterDetailTransactional/app", ".html");
 		sHash = sHash || "";
 		sUrlParameters = sUrlParameters ? "?" + sUrlParameters : "";
 
@@ -17,7 +17,7 @@ sap.ui.define([
 			return sUrl + sUrlParameters + sHash;
 	}
 
-	return Opa5.extend("com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.test.integration.arrangements.Arrangement", {
+	return Opa5.extend("com.pepsico.dev.reference.masterDetailTransactional.test.integration.arrangements.Arrangement", {
 
 		iStartTheApp : function (oOptions) {
 			oOptions = oOptions || {};

@@ -1,0 +1,34 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core"
+                         xmlns:l="sap.ui.layout"
+                         xmlns:f="sap.ui.layout.form"
+                         xmlns:pm="com.pepsico.core.sap.m">
+    <f:SimpleForm>
+        <f:content>
+            <Label text="KickOff Date"/>
+            <DatePicker
+                    value="{path:'transportation>ShippingLocationDetails/KickOffDate', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'short', strictParsing: true}}"
+                    displayFormat="short"/>
+            <Label text="Ship From Location"/>
+            <Text text="{transportation>TransportationHeader/ShipFromDetails/Description}"/>
+            <Text text="{transportation>TransportationHeader/ShipFrom}"/>
+            <Label text="Ship To Location"/>
+            <pm:InputWithSearchHelp selectedKey="{transportation>TransportationHeader/ShipTo}"
+                                    value="{transportation>TransportationHeader/ShipToDetails/Description}"
+                                    required="true" maxSuggestionWidth="auto" placeholder="Enter Region"
+                                    showSuggestion="true" showValueHelp="true"
+                                    suggestionItems="{/ShippingLocations}"
+                                    type="Text">
+                <pm:suggestionItems>
+                    <core:ListItem key="{ShippingLocationKey}" text="{Description}"
+                                   additionalText="{ShippingLocationKey}"/>
+                </pm:suggestionItems>
+            </pm:InputWithSearchHelp>
+            <Text text="{transportation>TransportationHeader/ShipTo}"/>
+            <Text text="{transportation>TransportationHeader/ShipToDetails/Description}"/>
+            <Label text="Total Amount"/>
+            <Input value="{transportation>TransportationHeader/TotalAmountRub}" type="Number"/>
+            <Label text="Comment"/>
+            <Input value="{transportation>TransportationHeader/Comment}" type="Text"/>
+        </f:content>
+    </f:SimpleForm>
+</core:FragmentDefinition>

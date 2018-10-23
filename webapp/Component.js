@@ -1,16 +1,25 @@
 /* global document */
-jQuery.sap.registerModulePath("com.pepsico.core", "/ext-resources/pepsico_core_library/src/"); // "/ext-resources/pepsico_core_library/src/""
+jQuery.sap.registerModulePath("com.pepsico.core", "/WebstormProjects/pepsico_core_library/src/"); // "/ext-resources/pepsico_core_library/src/""
 sap.ui.define([
 		"sap/ui/core/UIComponent",
 		"sap/ui/Device",
-		"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/model/models",
-		"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/controller/ListSelector",
-		"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/controller/ErrorHandler",
-		"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/model/TransportationService"
-	], function (UIComponent, Device, models, ListSelector, ErrorHandler, TransportationService) {
+		"com/pepsico/dev/reference/masterDetailTransactional/model/models",
+		"com/pepsico/dev/reference/masterDetailTransactional/controller/ListSelector",
+		"com/pepsico/dev/reference/masterDetailTransactional/controller/ErrorHandler",
+        "com/pepsico/core/sap/ui/base/GlobalErrorHandler",
+        "com/pepsico/core/sap/ui/base/ExceptionStringifier",
+        "sap/m/MessageBox",
+    	"com/pepsico/dev/reference/masterDetailTransactional/model/service/TransportationService",
+    	"com/pepsico/dev/reference/masterDetailTransactional/model/repository/TransportationRepository",
+        "com/pepsico/dev/reference/masterDetailTransactional/model/service/TransportationItemService",
+    	"com/pepsico/dev/reference/masterDetailTransactional/model/service/TransportationCalculateTotals",
+        "com/pepsico/dev/reference/masterDetailTransactional/model/service/ServiceFactory",
+	], function (UIComponent, Device, models, ListSelector, ErrorHandler, GlobalErrorHandler, ExceptionStringifier, MessageBox,
+                 TransportationService, TransportationRepository, TransportationItemService, TransportationCalculateTotals,
+                 ServiceFactory) {
 		"use strict";
 
-		return UIComponent.extend("com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.Component", {
+		return UIComponent.extend("com.pepsico.dev.reference.masterDetailTransactional.Component", {
 
 			metadata : {
 				manifest : "json",
@@ -24,26 +33,70 @@ sap.ui.define([
 			 * @override
 			 */
 			init : function () {
-				this.setModel(models.createDeviceModel(), "device");
+                this.initGlobalErrorHandler();
+
+			    this.setModel(models.createDeviceModel(), "device");
 				this.setModel(models.createFLPModel(), "FLP");
 				this.setModel(models.createTransportationViewModel(), "transportation");
+                this.setModel(models.createMasterDataModel(), "masterData");
 				
-				this.oListSelector = new ListSelector();
-				this._oErrorHandler = new ErrorHandler(this);  
-				this._oTransportationService = new TransportationService({
-					oODataModel: this.getModel(),
-					oTransportationViewModel: this.getModel("transportation"),
-				});
-				this._oTransportationService.init();
-				
-				
+				this.initServices();
 
-				// call the base component's init function and create the App view
 				UIComponent.prototype.init.apply(this, arguments);
+
+                this.initODataErrorHandler();
+                this.setModel(sap.ui.getCore().getMessageManager().getMessageModel(), "message");
 
 				// create the views based on the url/hash
 				this.getRouter().initialize();
 			},
+			initServices: function() {
+                this.oListSelector = new ListSelector();
+                this._oErrorHandler = new ErrorHandler(this);
+
+                this.oServiceFactory = new ServiceFactory({
+                    oODataModel: this.getModel(),
+                    oTransportationViewModel: this.getModel("transportation"),
+                });
+
+                this._oTransportationRepository = new TransportationRepository({
+                    oODataModel: this.getModel()
+                });
+
+                this.oTransportationService = new TransportationService({
+                    oODataModel: this.getModel(),
+                    oTransportationRepository: this._oTransportationRepository,
+                    oTransportationViewModel: this.getModel("transportation"),
+                });
+                this.oTransportationService.init();
+
+                this.oTransportationItemService = new TransportationItemService({
+                    oTransportationRepository: this._oTransportationRepository,
+                    oTransportationViewModel: this.getModel("transportation"),
+                });
+                this.oTransportationItemService.init();
+
+                this.oTransportationCalculateTotals = new TransportationCalculateTotals({
+                    oTransportationViewModel: this.getModel("transportation"),
+                });
+                this.oTransportationCalculateTotals.init();
+			},
+            initGlobalErrorHandler: function() {
+                this._oGlobalErrorHandler = new GlobalErrorHandler();
+                this._oGlobalErrorHandler.attachError({
+                    fnHandler: (oEvent) => {
+                        MessageBox.error("" + ExceptionStringifier.stringify(oEvent.oException));
+                        sap.ui.core.BusyIndicator.hide();
+                    }
+                });
+            },
+            initODataErrorHandler: function() {
+				this.getModel().attachMessageChange(null, (oEvent) => {
+                    oEvent.getParameter("newMessages")
+                        .forEach((oMessage) => oMessage.technical = false)
+						.forEach((oMessage) => sap.ui.getCore().getMessageManager().addMessages(oMessage));
+                });
+            },
 
 			/**
 			 * The component is destroyed by UI5 automatically.

@@ -4,14 +4,14 @@
 	], function (BaseObject, GroupHeaderListItem) {
 		"use strict";
 
-		return BaseObject.extend("com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.controller.ListSelector", {
+		return BaseObject.extend("com.pepsico.dev.reference.masterDetailTransactional.controller.ListSelector", {
 
 			/**
 			 * Provides a convenience API for selecting list items. All the functions will wait until the initial load of the a List passed to the instance by the setBoundMasterList
 			 * function.
 			 * @class
 			 * @public
-			 * @alias com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.controller.ListSelector
+			 * @alias com.pepsico.dev.reference.masterDetailTransactional.controller.ListSelector
 			 */
 
 			constructor : function () {

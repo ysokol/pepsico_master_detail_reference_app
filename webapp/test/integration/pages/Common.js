@@ -3,7 +3,7 @@ sap.ui.define([
 ], function(Opa5) {
 	"use strict";
 
-	return Opa5.extend("com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.test.integration.pages.Common", {
+	return Opa5.extend("com.pepsico.dev.reference.masterDetailTransactional.test.integration.pages.Common", {
 
 		createAWaitForAnEntitySet : function  (oOptions) {
 			return {
@@ -30,7 +30,7 @@ sap.ui.define([
 
 		getMockServer : function () {
 			return new Promise(function (success) {
-				Opa5.getWindow().sap.ui.require(["com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/localService/mockserver"], function (mockserver) {
+				Opa5.getWindow().sap.ui.require(["com/pepsico/dev/reference/masterDetailTransactional/localService/mockserver"], function (mockserver) {
 					success(mockserver.getMockServer());
 				});
 			});

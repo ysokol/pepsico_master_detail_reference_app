@@ -1,6 +1,6 @@
 /*global history */
 sap.ui.define([
-	"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/controller/BaseController",
+	"com/pepsico/dev/reference/masterDetailTransactional/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/core/routing/History",
 	"sap/ui/model/Filter",
@@ -8,37 +8,29 @@ sap.ui.define([
 	"sap/ui/model/FilterOperator",
 	"sap/m/GroupHeaderListItem",
 	"sap/ui/Device",
-	"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/model/formatter",
+	"com/pepsico/dev/reference/masterDetailTransactional/model/formatter",
 	"sap/m/MessagePopover",
-	"sap/m/MessagePopoverItem"
-], function(BaseController, JSONModel, History, Filter, Sorter, FilterOperator, GroupHeaderListItem, Device, formatter) {
+	"sap/m/MessagePopoverItem",
+    "sap/m/MessageBox"
+], function(BaseController, JSONModel, History, Filter, Sorter, FilterOperator, GroupHeaderListItem, Device, formatter, MessageBox) {
 	"use strict";
 
-	return BaseController.extend("com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.controller.Master", {
+	return BaseController.extend("com.pepsico.dev.reference.masterDetailTransactional.controller.Master", {
 
 		formatter: formatter,
 
 		/* =========================================================== */
 		/* lifecycle methods                                           */
 		/* =========================================================== */
-
 		/**
 		 * Called when the master list controller is instantiated. It sets up the event handling for the master/detail communication and other lifecycle tasks.
 		 * @public
 		 */
 		onInit: function() {
 			// https://sapui5.hana.ondemand.com/#/sample/sap.ui.core.sample.MessageManager.BasicMessages/code/Controller.controller.js
-			this._oMessagePopover = new sap.m.MessagePopover({
-				items: {
-					path: "message>/",
-					template: new sap.m.MessagePopoverItem({
-						description: "{message>description}",
-						type: "{message>type}",
-						title: "{message>message}"
-					})
-				}
-			});
-			this._oMessagePopover.setModel (sap.ui.getCore().getMessageManager().getMessageModel(),"message");
+
+			//this._oMessagePopover.setModel (sap.ui.getCore().getMessageManager().getMessageModel(),"message");
+            //sap.ui.getCore().getMessageManager().registerObject(this.getView(), true);
 			
 			
 			// Control state model
@@ -73,40 +65,42 @@ sap.ui.define([
 
 			this.getRouter().getRoute("master").attachPatternMatched(this._onMasterMatched, this);
 			this.getRouter().attachBypassed(this.onBypassed, this);
+
+            this.getFragment("TransportationCreateDialog").bindElement({
+				path: "transportation>/NewTransportationDetails",
+                mode: sap.ui.model.BindingMode.TwoWay,
+			});
 		},
 
 		/* =========================================================== */
 		/* event handlers                                              */
 		/* =========================================================== */
-
 		onNewTransportationDialogOpen: function() {
-			this.getDialog("NewTransportationDialog").open();
+		    this.getServiceFactory().getTransportationCreate()
+				.initCreateTransportationDetailsProps();
+		    this.getFragment("TransportationCreateDialog").open();
 		},
 		onNewTransportationSubmit: function() {
-			//var oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
-			var oMessageManager = sap.ui.getCore().getMessageManager();
-			//oMessageManager.registerMessageProcessor(oMessageProcessor);
-			//sap.ui.getCore().getMessageManager().registerObject(this.byId("myInputId"), true);
-			oMessageManager.addMessages(
-				new sap.ui.core.message.Message({
-					message: "ZIP codes must have at least 23 digits",
-					type: sap.ui.core.MessageType.Error,
-					target: "/NewTransportationDetails/Region",
-					processor: this.getView().getModel("transporation")
-				})
-			);
-
-			//this.getDialog("NewTransportationDialog").close();
+		    this.removeAllMessages();
+		    if (!this.getServiceFactory().getTransportationCreate().validateNewTransportation()) {
+			    return;
+            }
+            sap.ui.core.BusyIndicator.show(0);
+            this.getServiceFactory().getTransportationCreate().createTransportation()
+                .then((oData) => {
+                    this.getFragment("TransportationCreateDialog").close();
+                    sap.ui.core.BusyIndicator.hide();
+                    this._navToDetail(oData.TransportationHeader.__metadata.localODataPath.substring(1));
+                });
 		},
 		onNewTransportationMessagePopover: function(oEvent) {
-			
-			this._oMessagePopover.toggle(oEvent.getSource());
-			
+			this.getMessagePopover().toggle(oEvent.getSource());
 		},
 		onNewTransportationCancel: function() {
-			this.getDialog("NewTransportationDialog").close();
+            this.getServiceFactory().getTransportationCreate().clearCreateTransportationDetailsProps();
+		    this.removeAllMessages();
+		    this.getFragment("TransportationCreateDialog").close();
 		},
-
 		/**
 		 * After list data is available, this handler method updates the
 		 * master list counter
@@ -164,7 +158,7 @@ sap.ui.define([
 		onOpenViewSettings: function(oEvent) {
 			if (!this._oViewSettingsDialog) {
 				this._oViewSettingsDialog = sap.ui.xmlfragment(
-					"com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.view.ViewSettingsDialog", this);
+					"com.pepsico.dev.reference.masterDetailTransactional.view.ViewSettingsDialog", this);
 				this.getView().addDependent(this._oViewSettingsDialog);
 				// forward compact/cozy style into Dialog
 				this._oViewSettingsDialog.addStyleClass(this.getOwnerComponent().getContentDensityClass());
@@ -286,6 +280,16 @@ sap.ui.define([
 			this.getModel("appView").setProperty("/layout", "OneColumn");
 		},
 
+        _navToDetail: function(sTransportationKey) {
+            //this.getOwnerComponent().oListSelector.selectAListItem(sTransportationPath);
+		    var bReplace = !Device.system.phone;
+            // set the layout property of FCL control to show two columns
+            this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
+            this.getRouter().navTo("object", {
+                sObjectKey: sTransportationKey
+            }, bReplace);
+        },
+
 		/**
 		 * Shows the selected item on the detail page
 		 * On phones a additional history entry is created
@@ -297,7 +301,7 @@ sap.ui.define([
 			// set the layout property of FCL control to show two columns
 			this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
 			this.getRouter().navTo("object", {
-				objectId: oItem.getBindingContext().getProperty("TransportationNum")
+                sObjectKey: oItem.getBindingContext().getPath().substring(1)
 			}, bReplace);
 		},
 

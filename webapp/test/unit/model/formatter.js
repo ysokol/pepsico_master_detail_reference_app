@@ -2,7 +2,7 @@
 
 sap.ui.define([
 	"sap/m/Text",
-	"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/model/formatter"
+	"com/pepsico/dev/reference/masterDetailTransactional/model/formatter"
 ], function (Text, formatter) {
 	"use strict";
 

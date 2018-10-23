@@ -5,16 +5,16 @@
 
 sap.ui.define([
 	"sap/ui/test/Opa5",
-	"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/test/integration/arrangements/Arrangement","com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/test/integration/MasterJourney",
-	"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/test/integration/NavigationJourney",
-	"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/test/integration/NotFoundJourney",
-	"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/test/integration/BusyJourney",
-	"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/test/integration/FLPIntegrationJourney"
+	"com/pepsico/dev/reference/masterDetailTransactional/test/integration/arrangements/Arrangement","com/pepsico/dev/reference/masterDetailTransactional/test/integration/MasterJourney",
+	"com/pepsico/dev/reference/masterDetailTransactional/test/integration/NavigationJourney",
+	"com/pepsico/dev/reference/masterDetailTransactional/test/integration/NotFoundJourney",
+	"com/pepsico/dev/reference/masterDetailTransactional/test/integration/BusyJourney",
+	"com/pepsico/dev/reference/masterDetailTransactional/test/integration/FLPIntegrationJourney"
 ], function (Opa5, Arrangement) {
 	"use strict";
 	Opa5.extendConfig({
 		arrangements: new Arrangement(),
-		viewNamespace: "com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.view.",
+		viewNamespace: "com.pepsico.dev.reference.masterDetailTransactional.view.",
 		autoWait: true
 	});
 });

@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.controller.NotFound"
+	controllerName="com.pepsico.dev.reference.masterDetailTransactional.controller.NotFound"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m">
 

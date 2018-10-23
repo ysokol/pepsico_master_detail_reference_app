@@ -4,7 +4,7 @@ sap.ui.define([
 		"use strict";
 
 		var oMockServer,
-			_sAppModulePath = "com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/",
+			_sAppModulePath = "com/pepsico/dev/reference/masterDetailTransactional/",
 			_sJsonFilesModulePath = _sAppModulePath + "localService/mockdata";
 
 		return {

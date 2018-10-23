@@ -1,0 +1,18 @@
+<core:FragmentDefinition xmlns="sap.m"
+                         xmlns:core="sap.ui.core"
+                         xmlns:l="sap.ui.layout"
+                         xmlns:f="sap.ui.layout.form"
+                         xmlns:pm="com.pepsico.core.sap.m">
+    <f:SimpleForm>
+        <f:content>
+            <Label text="KickOff Date"/>
+            <Text text="{path:'KickOffDate', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'short', strictParsing: true}}"/>
+            <Label text="Ship From Location"/>
+            <Text text="{ShippingLocationDetails/Description}"/>
+            <Label text="Total Amount"/>
+            <Text text="{TotalAmountRub}"/>
+            <Label text="Comment"/>
+            <Text text="{Comment}"/>
+        </f:content>
+    </f:SimpleForm>
+</core:FragmentDefinition>

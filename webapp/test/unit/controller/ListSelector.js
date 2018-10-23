@@ -2,7 +2,7 @@
 /*eslint-env browser*/
 
 sap.ui.define([
-	"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/controller/ListSelector",
+	"com/pepsico/dev/reference/masterDetailTransactional/controller/ListSelector",
 	"sap/ui/thirdparty/sinon",
 	"sap/ui/thirdparty/sinon-qunit"
 ], function(ListSelector) {

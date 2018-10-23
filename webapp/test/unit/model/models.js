@@ -1,7 +1,7 @@
 /*global QUnit*/
 
 sap.ui.define([
-	"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/model/models",
+	"com/pepsico/dev/reference/masterDetailTransactional/model/models",
 	"sap/ui/thirdparty/sinon",
 	"sap/ui/thirdparty/sinon-qunit"
 ], function (models) {

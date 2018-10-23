@@ -1,7 +1,7 @@
 {
 	"_version": "1.9.0",
 	"sap.app": {
-		"id": "com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.pepsico_mater_detail_reference_app",
+		"id": "com.pepsico.dev.reference.masterDetailTransactional.pepsico_mater_detail_reference_app",
 		"type": "application",
 		"i18n": "i18n/i18n.properties",
 		"title": "{{appTitle}}",
@@ -11,7 +11,7 @@
 		},
 		"dataSources": {
 			"mainService": {
-				"uri": "/MyOrders/odata/",
+				"uri": "/odata/",
 				"type": "OData",
 				"settings": {
 					"odataVersion": "2.0",
@@ -43,7 +43,7 @@
 	"sap.ui5": {
 		"handleValidation": true,
 		"rootView": {
-			"viewName": "com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.view.App",
+			"viewName": "com.pepsico.dev.reference.masterDetailTransactional.view.App",
 			"type": "XML",
 			"async": true,
 			"id": "app"
@@ -68,19 +68,22 @@
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
-					"bundleName": "com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.i18n.i18n"
+					"bundleName": "com.pepsico.dev.reference.masterDetailTransactional.i18n.i18n"
 				}
 			},
 			"": {
 				"dataSource": "mainService",
-				"preload": false
+				"preload": false,
+                "settings": {
+                  "defaultUpdateMethod": "sap.ui.model.odata.UpdateMethod.Put"
+                }
 			}
 		},
 		"routing": {
 			"config": {
 				"routerClass": "sap.f.routing.Router",
 				"viewType": "XML",
-				"viewPath": "com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.view",
+				"viewPath": "com.pepsico.dev.reference.masterDetailTransactional.view",
 				"controlId": "layout",
 				"controlAggregation": "beginColumnPages",
 				"bypassed": {
@@ -95,7 +98,7 @@
 					"target": "master"
 				},
 				{
-					"pattern": "Transportations/{objectId}",
+					"pattern": "Transportations/{sObjectKey}",
 					"name": "object",
 					"target": [
 						"master",

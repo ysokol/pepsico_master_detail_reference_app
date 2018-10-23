@@ -1,10 +1,10 @@
 sap.ui.define([
-	"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/controller/BaseController",
+	"com/pepsico/dev/reference/masterDetailTransactional/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 ], function(BaseController, JSONModel) {
 	"use strict";
 
-	return BaseController.extend("com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.controller.App", {
+	return BaseController.extend("com.pepsico.dev.reference.masterDetailTransactional.controller.App", {
 
 		onInit: function() {
 			var oViewModel,

@@ -1,7 +1,7 @@
 sap.ui.define([
 	"sap/ui/test/Opa5",
 	"sap/ui/test/actions/Press",
-	"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/test/integration/pages/Common",
+	"com/pepsico/dev/reference/masterDetailTransactional/test/integration/pages/Common",
 	"sap/ui/test/actions/EnterText",
 	"sap/ui/test/matchers/AggregationLengthEquals",
 	"sap/ui/test/matchers/AggregationFilled",

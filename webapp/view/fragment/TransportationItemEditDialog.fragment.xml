@@ -1,0 +1,31 @@
+<core:FragmentDefinition xmlns="sap.m"
+                         xmlns:core="sap.ui.core"
+                         xmlns:l="sap.ui.layout"
+                         xmlns:f="sap.ui.layout.form"
+                         xmlns:pm="com.pepsico.core.sap.m">
+    <Dialog title="New Transportation Item ({transportation>/NewTransportationDetails/TransportationNum})">
+        <f:SimpleForm>
+            <f:content>
+                <Label text="Material"/>
+                <pm:InputWithSearchHelp value="{Material}"
+                                        required="true" maxSuggestionWidth="auto" placeholder="Enter Region"
+                                        showSuggestion="true" showValueHelp="true"
+                                        suggestionItems="{masterData>/Materials}"
+                                        type="Text">
+                    <pm:suggestionItems>
+                        <core:ListItem text="{masterData>Material}"
+                                       additionalText="{masterData>Description}"/>
+                    </pm:suggestionItems>
+                </pm:InputWithSearchHelp>
+                <Label text="Description"/>
+                <Input value="{transportation>Description}"/>
+            </f:content>
+        </f:SimpleForm>
+        <buttons>
+            <Button text="Submit" press="onTransportationItemCreateSubmit"/>
+            <Button text="Cancel" press="onNewTransportationCancel"/>
+            <Button text="Messages" press="onNewTransportationMessagePopover"/>
+        </buttons>
+    </Dialog>
+    >
+</core:FragmentDefinition>

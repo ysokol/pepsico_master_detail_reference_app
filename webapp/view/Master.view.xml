@@ -1,4 +1,4 @@
-<mvc:View controllerName="com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.controller.Master"
+<mvc:View controllerName="com.pepsico.dev.reference.masterDetailTransactional.controller.Master"
 	xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:semantic="sap.f.semantic">
 	<semantic:SemanticPage id="masterPage" preserveHeaderStateOnScroll="true" toggleHeaderOnTitleClick="false">
 		<semantic:titleHeading>
@@ -23,12 +23,12 @@
 					</OverflowToolbar>
 				</headerToolbar>
 				<items>
-					<ObjectListItem type="Navigation" press="onSelectionChange" title="{Status}"></ObjectListItem>
+					<ObjectListItem type="Navigation" press="onSelectionChange" title="{TransportationNum}"></ObjectListItem>
 				</items>
 			</List>
 		</semantic:content>
 		<semantic:addAction>
-			<semantic:AddAction press="onNewTransportationDialogOpen"/>
+			<semantic:AddAction id="createTransportationButton" press="onNewTransportationDialogOpen"/>
 		</semantic:addAction>
 	</semantic:SemanticPage>
 </mvc:View>

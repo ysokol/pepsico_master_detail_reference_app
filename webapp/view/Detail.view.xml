@@ -1,104 +1,100 @@
 <mvc:View
-	controllerName="com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.controller.Detail"
-	xmlns="sap.m"
-	xmlns:mvc="sap.ui.core.mvc"
-	xmlns:semantic="sap.f.semantic"
-	xmlns:footerbar="sap.ushell.ui.footerbar">
+        controllerName="com.pepsico.dev.reference.masterDetailTransactional.controller.Detail"
+        xmlns="sap.m"
+        xmlns:mvc="sap.ui.core.mvc"
+        xmlns:semantic="sap.f.semantic"
+        xmlns:footerbar="sap.ushell.ui.footerbar"
+        xmlns:f="sap.ui.layout.form"
+        xmlns:core="sap.ui.core"
+        xmlns:pm="com.pepsico.core.sap.m">
 
-	<semantic:SemanticPage
-		id="detailPage"
-		busy="{detailView>/busy}"
-		busyIndicatorDelay="{detailView>/delay}">
-		<semantic:titleHeading>
-			<Title text="{Status}"/>
-		</semantic:titleHeading>
-		<semantic:headerContent>
-			<ObjectAttribute title="{i18n>priceTitle}"/>
+    <semantic:SemanticPage
+            id="detailPage"
+            busy="{detailView>/busy}"
+            busyIndicatorDelay="{detailView>/delay}"
+            showFooter="{transportation>/TransportationDetailsViewProps/IsEditMode}">
+        <semantic:titleHeading>
+            <Title text="{transportation>TransportationHeader/TransportationNum}"/>
+        </semantic:titleHeading>
+        <semantic:headerContent>
+            <FlexBox alignItems="Start" justifyContent="SpaceBetween">
+                <items>
+                    <Panel backgroundDesign="Transparent">
+                        <content>
+                            <ObjectAttribute title="Path" text="{transportation>TransportationHeader/__metadata/localODataPath}"/>
+                        </content>
+                    </Panel>
+                    <ObjectStatus
+                            text="{path: 'transportation>TransportationHeader/Status', formatter:'.formatter.transportationStatusText'}"
+                            state="{path:'transportation>TransportationHeader/Status', formatter:'.formatter.transportationStatusState'}"
+                            icon="{path:'transportation>TransportationHeader/Status', formatter:'.formatter.transportationStatusIcon'}"/>
+                </items>
+            </FlexBox>
+        </semantic:headerContent>
+        <semantic:content>
 
-		</semantic:headerContent>
-		<semantic:content>
-			<Table
-				id="lineItemsList"
-				width="auto"
-				items="{TransportationItemDetails}"
-				updateFinished="onListUpdateFinished"
-				noDataText="{i18n>detailLineItemTableNoDataText}"
-				busyIndicatorDelay="{detailView>/lineItemTableDelay}">
-				<headerToolbar>
-					<Toolbar>
-						<Title
-							id="lineItemsTitle"
-							text="{detailView>/lineItemListTitle}"
-							titleStyle="H3"/>
-					</Toolbar>
-				</headerToolbar>
-				<columns>
-					<Column>
-						<Text text="{i18n>detailLineItemTableIDColumn}"/>
-					</Column>
-					<Column
-						minScreenWidth="Tablet"
-						demandPopin="true"
-						hAlign="End">
-						<Text text="{i18n>detailLineItemTableUnitNumberColumn}"/>
-					</Column>
-				</columns>
-				<items>
-					<ColumnListItem>
-						<cells>
-							<ObjectIdentifier
-								title="{Description}"
-								text="{ItemNum}"/>
-							<ObjectNumber
-								number="{
-									path: 'Quantity',
-									formatter: '.formatter.currencyValue'
-								}"
-								unit="{QuantityUom}"/>
-						</cells>
-					</ColumnListItem>
-				</items>
-			</Table>
-		</semantic:content>
-		<!--Semantic ShareMenu Buttons-->
-		<semantic:sendEmailAction>
-			<semantic:SendEmailAction
-				id="shareEmail"
-				press="onSendEmailPress"/>
-		</semantic:sendEmailAction>
+            <IconTabBar expanded="{device>/isNoPhone}">
+                <items>
+                    <IconTabFilter id="transportationDetailsTab" icon="sap-icon://hint" text="{i18n>details}">
+                    </IconTabFilter>
+                    <IconTabFilter id="transportationItemsTab" icon="sap-icon://product" text="{i18n>items}" count="3">
+                        <core:Fragment
+                                fragmentName="com.pepsico.dev.reference.masterDetailTransactional.view.fragment.TransportationItemsTable"
+                                type="XML"/>
+                        <!--<mvc:XMLView viewName="com.pepsico.dev.reference.masterDetailTransactional.view.TransportationItemsTable"/>-->
+                    </IconTabFilter>
+                </items>
+            </IconTabBar>
+        </semantic:content>
+        <!--Semantic ShareMenu Buttons-->
+        <semantic:deleteAction>
+            <semantic:DeleteAction press="onTransportationDelete"/>
+        </semantic:deleteAction>
+        <semantic:copyAction>
+            <semantic:CopyAction/>
+        </semantic:copyAction>
+        <semantic:editAction>
+            <semantic:EditAction press="onSwitchEditMode" visible="{= ${transportation>/TransportationDetailsViewProps/IsEditMode} === false}"/>
+        </semantic:editAction>
 
-		<semantic:shareInJamAction>
-			<semantic:ShareInJamAction
-				id="shareInJam"
-				visible="{FLP>/isShareInJamActive}"
-				press="onShareInJamPress"/>
-		</semantic:shareInJamAction>
+        <semantic:sendEmailAction>
+            <semantic:SendEmailAction id="shareEmail" press="onSendEmailPress"/>
+        </semantic:sendEmailAction>
 
-		<semantic:saveAsTileAction>
-			<footerbar:AddBookmarkButton
-				id="shareTile"
-				title="{detailView>/saveAsTileTitle}"/>
-		</semantic:saveAsTileAction>
+        <semantic:shareInJamAction>
+            <semantic:ShareInJamAction id="shareInJam" visible="{FLP>/isShareInJamActive}" press="onShareInJamPress"/>
+        </semantic:shareInJamAction>
 
-		<semantic:closeAction>
-			<semantic:CloseAction
-					id="closeColumn"
-					press="onCloseDetailPress"/>
-		</semantic:closeAction>
+        <semantic:saveAsTileAction>
+            <footerbar:AddBookmarkButton id="shareTile" title="{detailView>/saveAsTileTitle}"/>
+        </semantic:saveAsTileAction>
 
-		<semantic:fullScreenAction>
-			<semantic:FullScreenAction
-					id="enterFullScreen"
-					visible="{= !${device>/system/phone} &amp;&amp; !${appView>/actionButtonsInfo/midColumn/fullScreen}}"
-					press="toggleFullScreen"/>
-		</semantic:fullScreenAction>
-		<semantic:exitFullScreenAction>
-			<semantic:ExitFullScreenAction
-					id="exitFullScreen"
-					visible="{= !${device>/system/phone} &amp;&amp; ${appView>/actionButtonsInfo/midColumn/fullScreen}}"
-					press="toggleFullScreen"/>
-		</semantic:exitFullScreenAction>
+        <semantic:closeAction>
+            <semantic:CloseAction id="closeColumn" press="onCloseDetailPress"/>
+        </semantic:closeAction>
 
-	</semantic:SemanticPage>
+        <semantic:fullScreenAction>
+            <semantic:FullScreenAction id="enterFullScreen"
+                    visible="{= !${device>/system/phone} &amp;&amp; !${appView>/actionButtonsInfo/midColumn/fullScreen}}"
+                    press="toggleFullScreen"/>
+        </semantic:fullScreenAction>
+        <semantic:exitFullScreenAction>
+            <semantic:ExitFullScreenAction id="exitFullScreen"
+                    visible="{= !${device>/system/phone} &amp;&amp; ${appView>/actionButtonsInfo/midColumn/fullScreen}}"
+                    press="toggleFullScreen"/>
+        </semantic:exitFullScreenAction>
+
+        <semantic:messagesIndicator>
+            <semantic:MessagesIndicator press="onMessagesButtonPress"/>
+        </semantic:messagesIndicator>
+
+        <semantic:footerMainAction>
+            <semantic:FooterMainAction text="{i18n>save}" press="onSubmitChanges"/>
+        </semantic:footerMainAction>
+
+        <semantic:footerCustomActions>
+            <Button text="{i18n>cancel}" press="onResetChanges"/>
+        </semantic:footerCustomActions>
+    </semantic:SemanticPage>
 
 </mvc:View>

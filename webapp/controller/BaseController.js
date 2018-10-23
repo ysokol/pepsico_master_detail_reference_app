@@ -5,7 +5,7 @@ sap.ui.define([
 ], function(Controller, History) {
 	"use strict";
 
-	return Controller.extend("com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.controller.BaseController", {
+	return Controller.extend("com.pepsico.dev.reference.masterDetailTransactional.controller.BaseController", {
 		/**
 		 * Convenience method for accessing the router in every controller of the application.
 		 * @public
@@ -63,19 +63,60 @@ sap.ui.define([
 		},
 
 		getTransportationService: function() {
-			return this.getOwnerComponent()._oTransportationService;
+			return this.getOwnerComponent().oTransportationService;
 		},
 
-		getDialog: function(sDialogName) {
+        getServiceFactory: function() {
+            return this.getOwnerComponent().oServiceFactory;
+        },
+
+		/*getDialog: function(sDialogName) {
 			this._oDialogs = this._oDialogs || {};
 			if (!this._oDialogs[sDialogName]) {
 				this._oDialogs[sDialogName] = sap.ui.xmlfragment(this.getView().getId(),
-					"com.pepsico.reference.masterDetail.pepsico_mater_detail_reference_app.view.fragment." + sDialogName, this);
+					"com.pepsico.dev.reference.masterDetailTransactional.view.fragment." + sDialogName, this);
 				this.getView().addDependent(this._oDialogs[sDialogName]);
 				this._oDialogs[sDialogName].addStyleClass(this.getOwnerComponent().getContentDensityClass());
 			}
 			return this._oDialogs[sDialogName];
+		},*/
+
+		getFragment: function(sFragmentName) {
+            this._mFragments = this._mFragments || new Map();
+            if (!this._mFragments.has(sFragmentName)) {
+                let oNewFragment = sap.ui.xmlfragment(this.getView().getId(),
+                    "com.pepsico.dev.reference.masterDetailTransactional.view.fragment." + sFragmentName, this);
+                this.getView().addDependent(oNewFragment);
+                oNewFragment.addStyleClass(this.getOwnerComponent().getContentDensityClass());
+                this._mFragments.set(sFragmentName, oNewFragment);
+            }
+            return this._mFragments.get(sFragmentName);
 		},
+
+		removeAllMessages: function() {
+            sap.ui.getCore().getMessageManager().removeAllMessages();
+		},
+
+		getMessagePopover: function() {
+            if (this._oMessagePopover) {
+            	return this._oMessagePopover;
+            }
+			this._oMessagePopover = new sap.m.MessagePopover({
+                items: {
+                    path: "message>/",
+                    template: new sap.m.MessagePopoverItem({
+                        description: "{message>description}",
+                        type: "{message>type}",
+                        title: "{message>message}"
+                    })
+                }
+            });
+            return this._oMessagePopover;
+		},
+
+		getI18nText(sKey, aArgs) {
+            return this.getModel("i18n").getResourceBundle().getText(sKey, aArgs);
+		}
 
 	});
 

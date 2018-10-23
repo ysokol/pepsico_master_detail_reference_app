@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+
+<html>
+<!-- Copyright (c) 2014 SAP AG, All Rights Reserved -->
+<head>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>PepsiCo Reference Application</title>
+
+    <script id="sap-ui-bootstrap"
+            src="resources/sap-ui-core-dbg.js"
+            data-sap-ui-libs="sap.m"
+            data-sap-ui-theme="sap_bluecrystal"
+            data-sap-ui-xx-bindingSyntax="complex"
+            data-sap-ui-compatVersion="1.16"
+            data-sap-ui-resourceroots='{"com.pepsico.dev.reference.masterDetailTransactional": "./"}'>
+    </script>
+
+    <script type="text/javascript">
+        sap.ui.getCore().attachInit(function() {
+            new sap.m.Shell({
+                app: new sap.ui.core.ComponentContainer({
+                    height : "100%",
+                    name : "com.pepsico.dev.reference.masterDetailTransactional"
+                })
+            }).placeAt("content");
+        });
+    </script>
+
+</head>
+
+<!-- UI Content -->
+<body class="sapUiBody" id="content">
+</body>
+</html>

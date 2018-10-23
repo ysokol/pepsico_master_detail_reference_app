@@ -1,0 +1,38 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+                         xmlns:pm="com.pepsico.core.sap.m">
+    <Dialog title="New Transportation ({transportation>/NewTransportationDetails/TransportationNum})">
+        <f:SimpleForm editable="true" layout="ResponsiveGridLayout">
+            <f:content>
+                <Label text="Region"/>
+                <pm:InputWithSearchHelp selectedKey="{transportation>Region}"
+                                        value="{transportation>RegionDescription}"
+                                        required="true" maxSuggestionWidth="auto" placeholder="Enter Region"
+                                        showSuggestion="true" showValueHelp="true"
+                                        suggestionItems="{masterData>/Regions}"
+                                        type="Text">
+                    <pm:suggestionItems>
+                        <core:ListItem key="{masterData>Region}" text="{masterData>Description}"
+                                       additionalText="{transportation>Region}"/>
+                    </pm:suggestionItems>
+                </pm:InputWithSearchHelp>
+                <Label text="Ship From Location"/>
+                <pm:InputWithSearchHelp selectedKey="{transportation>ShipFrom}"
+                                        value="{transportation>ShipFromDescription}"
+                                        required="true" maxSuggestionWidth="auto" placeholder="Enter Ship From Location"
+                                        showSuggestion="true" showValueHelp="true"
+                                        suggestionItems="{transportation>ShipFromList}"
+                                        type="Text">
+                    <pm:suggestionItems>
+                        <core:ListItem key="{transportation>ShippingLocationKey}" text="{transportation>Description}"
+                                       additionalText="{transportation>ShippingLocationKey}"/>
+                    </pm:suggestionItems>
+                </pm:InputWithSearchHelp>
+            </f:content>
+        </f:SimpleForm>
+        <buttons>
+            <Button text="Submit" press="onNewTransportationSubmit"/>
+            <Button text="Cancel" press="onNewTransportationCancel"/>
+            <Button text="Messages" press="onNewTransportationMessagePopover"/>
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

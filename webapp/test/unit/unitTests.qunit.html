@@ -9,7 +9,7 @@
 			src="../../resources/sap-ui-core.js"
 			data-sap-ui-libs="sap.m"
 			data-sap-ui-resourceroots='{
-				"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app": "../../"
+				"com/pepsico/dev/reference/masterDetailTransactional": "../../"
 			}'
 			data-sap-ui-preload="async">
 		</script>
@@ -26,7 +26,7 @@
 
 			sap.ui.getCore().attachInit(function () {
 				sap.ui.require([
-					"com/pepsico/reference/masterDetail/pepsico_mater_detail_reference_app/test/unit/allTests"
+					"com/pepsico/dev/reference/masterDetailTransactional/test/unit/allTests"
 				], function() {
 					QUnit.start();
 				});

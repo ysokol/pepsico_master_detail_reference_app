@@ -1,0 +1,47 @@
+<mvc:View
+        controllerName="com.pepsico.dev.reference.masterDetailTransactional.controller.Detail"
+        xmlns="sap.m"
+        xmlns:mvc="sap.ui.core.mvc">
+    <Table
+            id="lineItemsList"
+            width="auto"
+            items="{TransportationItemDetails}"
+            updateFinished="onListUpdateFinished"
+            noDataText="{i18n>detailLineItemTableNoDataText}"
+            busyIndicatorDelay="{detailView>/lineItemTableDelay}">
+        <headerToolbar>
+            <Toolbar>
+                <Title
+                        id="lineItemsTitle"
+                        text="{detailView>/lineItemListTitle}"
+                        titleStyle="H3"/>
+            </Toolbar>
+        </headerToolbar>
+        <columns>
+            <Column>
+                <Text text="{i18n>detailLineItemTableIDColumn}"/>
+            </Column>
+            <Column
+                    minScreenWidth="Tablet"
+                    demandPopin="true"
+                    hAlign="End">
+                <Text text="{i18n>detailLineItemTableUnitNumberColumn}"/>
+            </Column>
+        </columns>
+        <items>
+            <ColumnListItem>
+                <cells>
+                    <ObjectIdentifier
+                            title="{Description}"
+                            text="{ItemNum}"/>
+                    <ObjectNumber
+                            number="{
+									path: 'Quantity',
+									formatter: '.formatter.currencyValue'
+								}"
+                            unit="{QuantityUom}"/>
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+</mvc:View>
