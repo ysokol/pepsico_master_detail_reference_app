@@ -5,10 +5,7 @@
 	xmlns="sap.f"
 	xmlns:m="sap.m"
 	height="100%">
-	<m:App
-		id="app"
-		busy="{appView>/busy}"
-		busyIndicatorDelay="{appView>/delay}">
+	<m:App id="app">
 		<FlexibleColumnLayout
 			id="layout"
 			layout="{appView>/layout}"

@@ -4,17 +4,16 @@
                          xmlns:pm="com.pepsico.core.sap.m">
     <f:SimpleForm>
         <f:content>
-            <Label text="KickOff Date"/>
-            <DatePicker
-                    value="{path:'transportation>ShippingLocationDetails/KickOffDate', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'short', strictParsing: true}}"
-                    displayFormat="short"/>
-            <Label text="Ship From Location"/>
-            <Text text="{transportation>TransportationHeader/ShipFromDetails/Description}"/>
-            <Text text="{transportation>TransportationHeader/ShipFrom}"/>
-            <Label text="Ship To Location"/>
-            <pm:InputWithSearchHelp selectedKey="{transportation>TransportationHeader/ShipTo}"
-                                    value="{transportation>TransportationHeader/ShipToDetails/Description}"
-                                    required="true" maxSuggestionWidth="auto" placeholder="Enter Region"
+            <Label text="{i18n>shipFrom}"/>
+            <Text text="{transportation>ShipFromDetails/Description} ({transportation>ShipFrom})"/>
+            <Label text="{i18n>kickOffDate}"/>
+            <Text text="under construction"/>
+            <!--<DatePicker value="{path:'transportation>TransportationHeader/KickOffDate', type:'sap.ui.model.type.DateTime',
+                        formatOptions: { style: 'short', strictParsing: true}}" displayFormat="short"/>-->
+            <Label text="{i18n>shipTo}"/>
+            <pm:InputWithSearchHelp selectedKey="{transportation>ShipTo}"
+                                    value="{transportation>ShipToDetails/Description}"
+                                    required="true" maxSuggestionWidth="auto" placeholder="{i18n>enterShipTo}"
                                     showSuggestion="true" showValueHelp="true"
                                     suggestionItems="{/ShippingLocations}"
                                     type="Text">
@@ -23,12 +22,28 @@
                                    additionalText="{ShippingLocationKey}"/>
                 </pm:suggestionItems>
             </pm:InputWithSearchHelp>
-            <Text text="{transportation>TransportationHeader/ShipTo}"/>
-            <Text text="{transportation>TransportationHeader/ShipToDetails/Description}"/>
-            <Label text="Total Amount"/>
-            <Input value="{transportation>TransportationHeader/TotalAmountRub}" type="Number"/>
-            <Label text="Comment"/>
-            <Input value="{transportation>TransportationHeader/Comment}" type="Text"/>
+            <Label text="{i18n>truck}"/>
+            <pm:InputWithSearchHelp selectedKey="{transportation>Truck}"
+                                    value="{transportation>TruckDetails/Description}"
+                                    required="true" maxSuggestionWidth="auto" placeholder="{i18n>enterTruck}"
+                                    showSuggestion="true" showValueHelp="true"
+                                    suggestionItems="{/Trucks}"
+                                    type="Text">
+                <pm:suggestionItems>
+                    <core:ListItem key="{TruckNum}" text="{Description}"
+                                   additionalText="{TruckNum}"/>
+                </pm:suggestionItems>
+            </pm:InputWithSearchHelp>
+            <Label text="{i18n>totalAmount}"/>
+            <Input value="{transportation>TotalPriceRub}" type="Number"/>
+            <Label text="{i18n>travelMileageKm}"/>
+            <Input value="{transportation>TravelMileageKm}" type="Number" change="onTransportationTravelMileageKmChanged"/>
+            <Label text="{i18n>totalWeight}"/>
+            <Input value="{transportation>TotalWeight}" type="Number"/>
+            <Label text="{i18n>totalVolume}"/>
+            <Input value="{transportation>TotalVolume}" type="Number"/>
+            <Label text="{i18n>comment}"/>
+            <Input value="{transportation>Comment}" type="Text"/>
         </f:content>
     </f:SimpleForm>
 </core:FragmentDefinition>

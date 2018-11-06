@@ -5,14 +5,26 @@
                          xmlns:pm="com.pepsico.core.sap.m">
     <f:SimpleForm>
         <f:content>
-            <Label text="KickOff Date"/>
-            <Text text="{path:'KickOffDate', type:'sap.ui.model.type.DateTime', formatOptions: { style: 'short', strictParsing: true}}"/>
-            <Label text="Ship From Location"/>
-            <Text text="{ShippingLocationDetails/Description}"/>
-            <Label text="Total Amount"/>
-            <Text text="{TotalAmountRub}"/>
-            <Label text="Comment"/>
-            <Text text="{Comment}"/>
+            <Label text="{i18n>shipFrom}"/>
+            <Text text="{transportation>ShipFromDetails/Description} ({transportation>ShipFrom})"/>
+            <Label text="{i18n>kickOffDate}"/>
+            <Text text="under construction"/>
+            <!--<DatePicker value="{path:'transportation>TransportationHeader/KickOffDate', type:'sap.ui.model.type.DateTime',
+                        formatOptions: { style: 'short', strictParsing: true}}" displayFormat="short"/>-->
+            <Label text="{i18n>shipTo}"/>
+            <Text text="{transportation>ShipToDetails/Description} ({transportation>ShipTo})"/>
+            <Label text="{i18n>truck}"/>
+            <Text text="{transportation>TruckDetails/Description} ({transportation>Truck})"/>
+            <Label text="{i18n>totalAmount}"/>
+            <Text text="{transportation>TotalAmountRub}"/>
+            <Label text="{i18n>travelMileageKm}"/>
+            <Text text="{transportation>TravelMileageKm}"/>
+            <Label text="{i18n>totalWeight}"/>
+            <Text text="{transportation>TotalAmountRub}"/>
+            <Label text="{i18n>totalVolume}"/>
+            <Text text="{transportation>TravelMileageKm}"/>
+            <Label text="{i18n>comment}"/>
+            <Text text="{transportation>Comment}"/>
         </f:content>
     </f:SimpleForm>
 </core:FragmentDefinition>

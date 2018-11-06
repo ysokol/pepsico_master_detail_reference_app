@@ -1,8 +1,10 @@
 /*global history */
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
-	"sap/ui/core/routing/History"
-], function(Controller, History) {
+	"sap/ui/core/routing/History",
+	"sap/m/MessagePopover",
+    "sap/m/MessageItem",
+], function(Controller, History, MessagePopover, MessageItem) {
 	"use strict";
 
 	return Controller.extend("com.pepsico.dev.reference.masterDetailTransactional.controller.BaseController", {
@@ -101,18 +103,25 @@ sap.ui.define([
             if (this._oMessagePopover) {
             	return this._oMessagePopover;
             }
-			this._oMessagePopover = new sap.m.MessagePopover({
+			this._oMessagePopover = new MessagePopover({
                 items: {
-                    path: "message>/",
-                    template: new sap.m.MessagePopoverItem({
-                        description: "{message>description}",
-                        type: "{message>type}",
-                        title: "{message>message}"
+                    path: "/",
+                    template: new MessageItem({
+                        description: "{description}",
+                        type: "{type}",
+                        title: "{message}",
+                        subtitle: '{subtitle}',
+                        counter: '{counter}',
                     })
                 }
             });
+            this._oMessagePopover.setModel(this.getOwnerComponent().getModel("messageLog"));
             return this._oMessagePopover;
 		},
+
+        onToggleMessagePopover: function(oEvent) {
+            this.getMessagePopover().toggle(oEvent.getSource());
+        },
 
 		getI18nText(sKey, aArgs) {
             return this.getModel("i18n").getResourceBundle().getText(sKey, aArgs);

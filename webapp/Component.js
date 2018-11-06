@@ -3,35 +3,25 @@ jQuery.sap.registerModulePath("com.pepsico.core", "/WebstormProjects/pepsico_cor
 sap.ui.define([
 		"sap/ui/core/UIComponent",
 		"sap/ui/Device",
+    	"sap/m/MessageBox",
 		"com/pepsico/dev/reference/masterDetailTransactional/model/models",
 		"com/pepsico/dev/reference/masterDetailTransactional/controller/ListSelector",
-		"com/pepsico/dev/reference/masterDetailTransactional/controller/ErrorHandler",
         "com/pepsico/core/sap/ui/base/GlobalErrorHandler",
         "com/pepsico/core/sap/ui/base/ExceptionStringifier",
-        "sap/m/MessageBox",
-    	"com/pepsico/dev/reference/masterDetailTransactional/model/service/TransportationService",
     	"com/pepsico/dev/reference/masterDetailTransactional/model/repository/TransportationRepository",
-        "com/pepsico/dev/reference/masterDetailTransactional/model/service/TransportationItemService",
-    	"com/pepsico/dev/reference/masterDetailTransactional/model/service/TransportationCalculateTotals",
-        "com/pepsico/dev/reference/masterDetailTransactional/model/service/ServiceFactory",
-	], function (UIComponent, Device, models, ListSelector, ErrorHandler, GlobalErrorHandler, ExceptionStringifier, MessageBox,
-                 TransportationService, TransportationRepository, TransportationItemService, TransportationCalculateTotals,
-                 ServiceFactory) {
+    	"com/pepsico/dev/reference/masterDetailTransactional/model/repository/ShippingLocationRepository",
+    	"com/pepsico/dev/reference/masterDetailTransactional/model/service/ServiceFactory",
+	], function (UIComponent, Device, MessageBox, models, ListSelector, GlobalErrorHandler, ExceptionStringifier,
+                 TransportationRepository, ShippingLocationRepository, ServiceFactory) {
 		"use strict";
 
 		return UIComponent.extend("com.pepsico.dev.reference.masterDetailTransactional.Component", {
 
 			metadata : {
 				manifest : "json",
-				handleValidation  : true,
+				handleValidation  : true, // required for automated
 			},
 
-			/**
-			 * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-			 * In this method, the FLP and device models are set and the router is initialized.
-			 * @public
-			 * @override
-			 */
 			init : function () {
                 this.initGlobalErrorHandler();
 
@@ -39,47 +29,34 @@ sap.ui.define([
 				this.setModel(models.createFLPModel(), "FLP");
 				this.setModel(models.createTransportationViewModel(), "transportation");
                 this.setModel(models.createMasterDataModel(), "masterData");
+				this.setModel(models.createAppViewMode(), "appView");
 				
 				this.initServices();
 
 				UIComponent.prototype.init.apply(this, arguments);
 
                 this.initODataErrorHandler();
-                this.setModel(sap.ui.getCore().getMessageManager().getMessageModel(), "message");
+                this.setModel(sap.ui.getCore().getMessageManager().getMessageModel(), "messageLog");
 
-				// create the views based on the url/hash
 				this.getRouter().initialize();
 			},
 			initServices: function() {
                 this.oListSelector = new ListSelector();
-                this._oErrorHandler = new ErrorHandler(this);
+
+                let oTransportationRepository = new TransportationRepository({
+                    oODataModel: this.getModel(),
+                });
+
+                let oShippingLocationRepository = new ShippingLocationRepository({
+                    oODataModel: this.getModel(),
+                });
 
                 this.oServiceFactory = new ServiceFactory({
-                    oODataModel: this.getModel(),
                     oTransportationViewModel: this.getModel("transportation"),
+                    oI18nModel: this.getModel("i18n"),
+                    oTransportationRepository: oTransportationRepository,
+                    oShippingLocationRepository: oShippingLocationRepository
                 });
-
-                this._oTransportationRepository = new TransportationRepository({
-                    oODataModel: this.getModel()
-                });
-
-                this.oTransportationService = new TransportationService({
-                    oODataModel: this.getModel(),
-                    oTransportationRepository: this._oTransportationRepository,
-                    oTransportationViewModel: this.getModel("transportation"),
-                });
-                this.oTransportationService.init();
-
-                this.oTransportationItemService = new TransportationItemService({
-                    oTransportationRepository: this._oTransportationRepository,
-                    oTransportationViewModel: this.getModel("transportation"),
-                });
-                this.oTransportationItemService.init();
-
-                this.oTransportationCalculateTotals = new TransportationCalculateTotals({
-                    oTransportationViewModel: this.getModel("transportation"),
-                });
-                this.oTransportationCalculateTotals.init();
 			},
             initGlobalErrorHandler: function() {
                 this._oGlobalErrorHandler = new GlobalErrorHandler();
@@ -87,6 +64,7 @@ sap.ui.define([
                     fnHandler: (oEvent) => {
                         MessageBox.error("" + ExceptionStringifier.stringify(oEvent.oException));
                         sap.ui.core.BusyIndicator.hide();
+                        this.getModel("transportation").setProperty("TransportationDetailsViewProps/BusyIndicator", false);
                     }
                 });
             },

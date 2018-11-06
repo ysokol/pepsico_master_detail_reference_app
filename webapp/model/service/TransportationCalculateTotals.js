@@ -18,34 +18,52 @@ sap.ui.define([
     let TransportationCalculateTotals = Object.extend('com.pepsico.dev.reference.masterDetailTransactional.model.TransportationCalculateTotals', {
         constructor: function ({
                                    oTransportationViewModel = undefined,
+	                               oI18nModel = undefined,
                                } = {}) {
             Object.apply(this);
             this._oTransportationViewModel = oTransportationViewModel;
             this._oMessageManager = sap.ui.getCore().getMessageManager();
         },
         init: function () {
-            this.initReactions();
+            //this.initReactions();
         },
-        initReactions: function () {
+        /*initReactions: function () {
             JSONModelExtensions.attachListChanged({
                 oJSONModel: this._oTransportationViewModel,
                 sPath: "/TransportationDetails/TransportationItems",
                 fnHandler: () => {
                     if (this._oTransportationViewModel.getProperty("/TransportationDetailsViewProps/IsEditMode")) {
-                        alert("recalculateTotals");
+                        this.recalculateTotals();
+                        this.recalculatePrice();
                     }
                 }
             });
-        },
+            JSONModelExtensions.attachPropertyChanged({
+                oJSONModel: this._oTransportationViewModel,
+                sPath: "/TransportationDetails/TravelMileageKm",
+                fnHandler: () => {
+                    if (this._oTransportationViewModel.getProperty("/TransportationDetailsViewProps/IsEditMode")) {
+                        this.recalculatePrice();
+                    }
+                }
+            });
+        },*/
         recalculateTotals: function () {
             let oTotals = this._oTransportationViewModel.getProperty("/TransportationDetails/TransportationItems")
                 .reduce((oAccumulator, oCurrentItem) => ({
-                        TotalVolume: oAccumulator.TotalVolume + oCurrentItem.Volume,
-                        TotalWeight: oAccumulator.TotalWeight + oCurrentItem.Weight,
+                        TotalVolume: (parseFloat(oAccumulator.TotalVolume) +
+                            parseFloat(oCurrentItem.Volume)).toFixed(2).toString(),
+                        TotalWeight: (parseFloat(oAccumulator.TotalWeight)+
+                            parseFloat(oCurrentItem.Weight)).toFixed(2).toString(),
                     }),
-                    {TotalVolume: 0, TotalWeight: 0});
-            this._oTransportationViewModel.setProperty("/TransportationDetails/TransportationHeader/TotalVolume", oTotals.TotalVolume);
-            this._oTransportationViewModel.setProperty("/TransportationDetails/TransportationHeader/TotalVolume", oTotals.TotalWeight);
+                    {TotalVolume: "0.00", TotalWeight: "0.00"});
+            this._oTransportationViewModel.setProperty("/TransportationDetails/TotalVolume", oTotals.TotalVolume);
+            this._oTransportationViewModel.setProperty("/TransportationDetails/TotalWeight", oTotals.TotalWeight);
+        },
+        recalculatePrice: function () {
+            this._oTransportationViewModel.setProperty("/TransportationDetails/TotalPriceRub",
+	            (parseFloat(this._oTransportationViewModel.getProperty("/TransportationDetails/TravelMileageKm")) * 100 +
+	            parseFloat(this._oTransportationViewModel.getProperty("/TransportationDetails/TotalWeight")) * 10).toFixed(2).toString());
         }
 
     });

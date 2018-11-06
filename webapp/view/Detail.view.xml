@@ -3,41 +3,28 @@
         xmlns="sap.m"
         xmlns:mvc="sap.ui.core.mvc"
         xmlns:semantic="sap.f.semantic"
-        xmlns:footerbar="sap.ushell.ui.footerbar"
-        xmlns:f="sap.ui.layout.form"
-        xmlns:core="sap.ui.core"
-        xmlns:pm="com.pepsico.core.sap.m">
+        xmlns:core="sap.ui.core">
 
     <semantic:SemanticPage
             id="detailPage"
-            busy="{detailView>/busy}"
-            busyIndicatorDelay="{detailView>/delay}"
+            busy="{transportation>/TransportationDetailsViewProps/BusyIndicator}"
             showFooter="{transportation>/TransportationDetailsViewProps/IsEditMode}">
         <semantic:titleHeading>
-            <Title text="{transportation>TransportationHeader/TransportationNum}"/>
+            <Title text="Transportation # {transportation>TransportationNum}"/>
         </semantic:titleHeading>
         <semantic:headerContent>
-            <FlexBox alignItems="Start" justifyContent="SpaceBetween">
-                <items>
-                    <Panel backgroundDesign="Transparent">
-                        <content>
-                            <ObjectAttribute title="Path" text="{transportation>TransportationHeader/__metadata/localODataPath}"/>
-                        </content>
-                    </Panel>
-                    <ObjectStatus
-                            text="{path: 'transportation>TransportationHeader/Status', formatter:'.formatter.transportationStatusText'}"
-                            state="{path:'transportation>TransportationHeader/Status', formatter:'.formatter.transportationStatusState'}"
-                            icon="{path:'transportation>TransportationHeader/Status', formatter:'.formatter.transportationStatusIcon'}"/>
-                </items>
-            </FlexBox>
+            <ObjectStatus
+                    text="{path: 'transportation>Status', formatter:'.formatter.transportationStatusText'}"
+                    state="{path:'transportation>Status', formatter:'.formatter.transportationStatusState'}"
+                    icon="{path:'transportation>Status', formatter:'.formatter.transportationStatusIcon'}"/>
         </semantic:headerContent>
         <semantic:content>
-
             <IconTabBar expanded="{device>/isNoPhone}">
                 <items>
                     <IconTabFilter id="transportationDetailsTab" icon="sap-icon://hint" text="{i18n>details}">
                     </IconTabFilter>
-                    <IconTabFilter id="transportationItemsTab" icon="sap-icon://product" text="{i18n>items}" count="3">
+                    <IconTabFilter id="transportationItemsTab" icon="sap-icon://product" text="{i18n>items}"
+                                   count="{=${transportation>TransportationItems}.length}">
                         <core:Fragment
                                 fragmentName="com.pepsico.dev.reference.masterDetailTransactional.view.fragment.TransportationItemsTable"
                                 type="XML"/>
@@ -50,24 +37,13 @@
         <semantic:deleteAction>
             <semantic:DeleteAction press="onTransportationDelete"/>
         </semantic:deleteAction>
-        <semantic:copyAction>
+        <!--<semantic:copyAction>
             <semantic:CopyAction/>
-        </semantic:copyAction>
+        </semantic:copyAction>-->
         <semantic:editAction>
-            <semantic:EditAction press="onSwitchEditMode" visible="{= ${transportation>/TransportationDetailsViewProps/IsEditMode} === false}"/>
+            <semantic:EditAction press="onSwitchEditMode"
+                                 visible="{= ${transportation>/TransportationDetailsViewProps/IsEditMode} === false}"/>
         </semantic:editAction>
-
-        <semantic:sendEmailAction>
-            <semantic:SendEmailAction id="shareEmail" press="onSendEmailPress"/>
-        </semantic:sendEmailAction>
-
-        <semantic:shareInJamAction>
-            <semantic:ShareInJamAction id="shareInJam" visible="{FLP>/isShareInJamActive}" press="onShareInJamPress"/>
-        </semantic:shareInJamAction>
-
-        <semantic:saveAsTileAction>
-            <footerbar:AddBookmarkButton id="shareTile" title="{detailView>/saveAsTileTitle}"/>
-        </semantic:saveAsTileAction>
 
         <semantic:closeAction>
             <semantic:CloseAction id="closeColumn" press="onCloseDetailPress"/>
@@ -75,17 +51,17 @@
 
         <semantic:fullScreenAction>
             <semantic:FullScreenAction id="enterFullScreen"
-                    visible="{= !${device>/system/phone} &amp;&amp; !${appView>/actionButtonsInfo/midColumn/fullScreen}}"
-                    press="toggleFullScreen"/>
+                                       visible="{= !${device>/system/phone} &amp;&amp; !${appView>/actionButtonsInfo/midColumn/fullScreen}}"
+                                       press="onToggleFullScreen"/>
         </semantic:fullScreenAction>
         <semantic:exitFullScreenAction>
             <semantic:ExitFullScreenAction id="exitFullScreen"
-                    visible="{= !${device>/system/phone} &amp;&amp; ${appView>/actionButtonsInfo/midColumn/fullScreen}}"
-                    press="toggleFullScreen"/>
+                                           visible="{= !${device>/system/phone} &amp;&amp; ${appView>/actionButtonsInfo/midColumn/fullScreen}}"
+                                           press="onToggleFullScreen"/>
         </semantic:exitFullScreenAction>
 
         <semantic:messagesIndicator>
-            <semantic:MessagesIndicator press="onMessagesButtonPress"/>
+            <semantic:MessagesIndicator press="onToggleMessagePopover"/>
         </semantic:messagesIndicator>
 
         <semantic:footerMainAction>

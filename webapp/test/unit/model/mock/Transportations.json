@@ -1,0 +1,32 @@
+[
+  {
+    "TransportationNum": "1000",
+    "Status": "DRAFT",
+    "ShipFrom": "1000",
+    "ShipFromDetails": {
+      "Description": "1000"
+    },
+    "ShipTo": "2000",
+    "ShipToDetails": {
+      "Description": "2000"
+    },
+    "Truck": "1000",
+    "TruckDetails": {
+      "Description": "1000"
+    },
+    "Comment": "TestComment",
+    "TotalPriceRub": 0,
+    "TotalVolume": 0,
+    "VolumeUom": "",
+    "TotalWeight": 0,
+    "WeightUom": "",
+    "TravelMileageKm": 0,
+    "TransportationItems": [
+      {
+        "Transportation": "1000",
+        "TransportationItem": "0010",
+        "Material": "1000"
+      }
+    ]
+  }
+]

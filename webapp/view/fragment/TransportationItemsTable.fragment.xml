@@ -1,22 +1,20 @@
 <core:FragmentDefinition xmlns="sap.m"
-                         xmlns:core="sap.ui.core"
-                         xmlns:l="sap.ui.layout"
-                         xmlns:f="sap.ui.layout.form"
-                         xmlns:pm="com.pepsico.core.sap.m">
+                         xmlns:core="sap.ui.core">
+    <!--columns="{transportation>TransportationItemColumns}"-->
     <Table
             id="lineItemsList"
             width="auto"
             items="{transportation>TransportationItems}"
-            updateFinished="onListUpdateFinished"
-            noDataText="{i18n>detailLineItemTableNoDataText}"
-            busyIndicatorDelay="{detailView>/lineItemTableDelay}">
+            noDataText="{i18n>detailLineItemTableNoDataText}">
         <headerToolbar>
-            <Toolbar>
+            <Toolbar visible="{transportation>/TransportationDetailsViewProps/IsEditMode}">
                 <Button icon="sap-icon://add" press="onTransportationItemCreateDialogOpen"/>
-                <Button icon="sap-icon://simulate"/>
             </Toolbar>
         </headerToolbar>
         <columns>
+            <Column>
+                <Text text="{i18n>errorStatus}"/>
+            </Column>
             <Column>
                 <Text text="{i18n>itemNum}"/>
             </Column>
@@ -49,23 +47,28 @@
             </Column>
         </columns>
         <items>
-            <ColumnListItem type="Navigation">
+            <ColumnListItem
+                    type="{= ${transportation>/TransportationDetailsViewProps/IsEditMode} ? 'DetailAndActive' : 'Inactive'}"
+                    detailPress="onTransportationItemEditDialogOpen">
                 <cells>
-                    <Text text="{transportation>__metadata/localODataPath}"/>
+                    <Text text="{transportation>_ErrorStatus}"/>
+                    <Text text="{transportation>ItemNum}"/>
                     <ObjectIdentifier
                             title="{transportation>Material}"
                             text="{transportation>Description}"/>
                     <VBox alignItems="End">
-                        <StepInput value="{Quantity}" displayValuePrecision="2" visible="{transportation>/TransportationDetailsViewProps/IsEditMode}"/>
-                        <Text text="{QuantityUom}" width="2rem" visible="{transportation>/TransportationDetailsViewProps/IsEditMode}"/>
-                        <ObjectNumber visible="{= ${transportation>/TransportationDetailsViewProps/IsEditMode} !== true}"
-                                      number="{
-									path: 'Quantity',
+                        <Input value="{transportation>Quantity}" type="Number"
+                                   visible="{transportation>/TransportationDetailsViewProps/IsEditMode}"/>
+                        <Text text="{transportation>QuantityUom}" width="2rem"
+                              visible="{transportation>/TransportationDetailsViewProps/IsEditMode}"/>
+                        <ObjectNumber
+                                visible="{= ${transportation>/TransportationDetailsViewProps/IsEditMode} !== true}"
+                                number="{
+									path: 'transportation>Quantity',
 									formatter: '.formatter.currencyValue'
 								}"
-                                      unit="{QuantityUom}"/>
+                                unit="{transportation>QuantityUom}"/>
                     </VBox>
-
 
                     <ObjectNumber
                             number="{
@@ -80,7 +83,7 @@
 								}"
                             unit="{transportation>WeightUom}"/>
                     <Button icon="sap-icon://delete" press="onTransportationItemDelete"
-                        enabled="{transportation>/TransportationDetailsViewProps/IsEditMode}"/>
+                            visible="{transportation>/TransportationDetailsViewProps/IsEditMode}"/>
                 </cells>
             </ColumnListItem>
         </items>

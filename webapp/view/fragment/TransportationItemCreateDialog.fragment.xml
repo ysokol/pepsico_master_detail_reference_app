@@ -1,31 +1,64 @@
 <core:FragmentDefinition xmlns="sap.m"
                          xmlns:core="sap.ui.core"
-                         xmlns:l="sap.ui.layout"
                          xmlns:f="sap.ui.layout.form"
                          xmlns:pm="com.pepsico.core.sap.m">
-    <Dialog title="New Transportation Item ({transportation>/NewTransportationDetails/TransportationNum})">
+    <Dialog title="New Transportation Item ({transportation>/NewTransportationItemDetails/ItemNum})">
         <f:SimpleForm>
             <f:content>
-                <Label text="Material"/>
-                <pm:InputWithSearchHelp value="{transportation>Material}"
-                                        required="true" maxSuggestionWidth="auto" placeholder="Enter Region"
+                <Label text="{i18n>material}"/>
+                <pm:InputWithSearchHelp selectedKey="{transportation>Material}"
+                                        value="{transportation>MaterialDetails/Description}"
+                                        change="onTransportationItemCreateDialogMaterialChanged"
+                                        required="true" maxSuggestionWidth="auto" placeholder="{i18n>enterMaterial}"
                                         showSuggestion="true" showValueHelp="true"
-                                        suggestionItems="{masterData>/Materials}"
-                                        type="Text">
+                                        suggestionItems="{masterData>/Materials}" type="Text">
                     <pm:suggestionItems>
-                        <core:ListItem text="{masterData>Material}"
-                                       additionalText="{masterData>Description}"/>
+                        <core:ListItem key="{masterData>Material}" text="{masterData>Description}"
+                                       additionalText="{masterData>Material}"/>
                     </pm:suggestionItems>
                 </pm:InputWithSearchHelp>
-                <Label text="Description"/>
+                <Label text="{i18n>description}"/>
                 <Input value="{transportation>Description}"/>
+                <Label text="{i18n>quantity}"/>
+                <Input value="{transportation>Quantity}" type="Number"/>
+                <pm:InputWithSearchHelp value="{transportation>QuantityUom}"
+                                        required="true" maxSuggestionWidth="auto" placeholder="{i18n>enterUom}"
+                                        showSuggestion="true" showValueHelp="true"
+                                        suggestionItems="{masterData>/UnitOfMeasures}" type="Text">
+                    <pm:suggestionItems>
+                        <core:ListItem key="{masterData>Uom}" text="{masterData>Description}"
+                                       additionalText="{masterData>Uom}"/>
+                    </pm:suggestionItems>
+                </pm:InputWithSearchHelp>
+                <Label text="{i18n>weight}"/>
+                <Input value="{transportation>Weight}" type="Number"/>
+                <pm:InputWithSearchHelp value="{transportation>WeightUom}"
+                                        required="true" maxSuggestionWidth="auto" placeholder="{i18n>enterUom}"
+                                        showSuggestion="true" showValueHelp="true"
+                                        suggestionItems="{masterData>/UnitOfMeasures}" type="Text">
+                    <pm:suggestionItems>
+                        <core:ListItem key="{masterData>Uom}" text="{masterData>Description}"
+                                       additionalText="{masterData>Uom}"/>
+                    </pm:suggestionItems>
+                </pm:InputWithSearchHelp>
+                <Label text="{i18n>volume}"/>
+                <Input value="{transportation>Volume}" type="Number"/>
+                <pm:InputWithSearchHelp value="{transportation>VolumeUom}"
+                                        required="true" maxSuggestionWidth="auto" placeholder="{i18n>enterUom}"
+                                        showSuggestion="true" showValueHelp="true"
+                                        suggestionItems="{masterData>/UnitOfMeasures}" type="Text">
+                    <pm:suggestionItems>
+                        <core:ListItem key="{masterData>Uom}" text="{masterData>Description}"
+                                       additionalText="{masterData>Uom}"/>
+                    </pm:suggestionItems>
+                </pm:InputWithSearchHelp>
             </f:content>
         </f:SimpleForm>
         <buttons>
-            <Button text="Submit" press="onTransportationItemCreateSubmit"/>
-            <Button text="Cancel" press="onNewTransportationCancel"/>
-            <Button text="Messages" press="onNewTransportationMessagePopover"/>
+            <Button text="{i18n>submit}" press="onTransportationItemCreateSubmit"/>
+            <Button text="{i18n>cancel}" press="onTransportationItemCreateCancel"/>
+            <Button icon="sap-icon://message-popup" text="{=${messageLog>/}.length}" press="onToggleMessagePopover"
+                    visible="{= (${messageLog>/}.length !== 0)}"/>
         </buttons>
     </Dialog>
-    >
 </core:FragmentDefinition>

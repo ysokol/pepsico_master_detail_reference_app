@@ -1,14 +1,18 @@
-<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+<core:FragmentDefinition xmlns="sap.m"
+                         xmlns:core="sap.ui.core"
+                         xmlns:l="sap.ui.layout"
+                         xmlns:f="sap.ui.layout.form"
                          xmlns:pm="com.pepsico.core.sap.m">
-    <Dialog title="New Transportation ({transportation>/NewTransportationDetails/TransportationNum})">
+    <Dialog title="Enter New Transportation Details">
         <f:SimpleForm editable="true" layout="ResponsiveGridLayout">
             <f:content>
                 <Label text="Region"/>
                 <pm:InputWithSearchHelp selectedKey="{transportation>Region}"
-                                        value="{transportation>RegionDescription}"
-                                        required="true" maxSuggestionWidth="auto" placeholder="Enter Region"
+                                        value="{transportation>RegionDetails/Description}"
+                                        required="true" maxSuggestionWidth="auto" placeholder="{i18n>enterRegion}"
                                         showSuggestion="true" showValueHelp="true"
                                         suggestionItems="{masterData>/Regions}"
+                                        change="onNewTransportationRegionChanged"
                                         type="Text">
                     <pm:suggestionItems>
                         <core:ListItem key="{masterData>Region}" text="{masterData>Description}"
@@ -17,22 +21,27 @@
                 </pm:InputWithSearchHelp>
                 <Label text="Ship From Location"/>
                 <pm:InputWithSearchHelp selectedKey="{transportation>ShipFrom}"
-                                        value="{transportation>ShipFromDescription}"
-                                        required="true" maxSuggestionWidth="auto" placeholder="Enter Ship From Location"
-                                        showSuggestion="true" showValueHelp="true"
-                                        suggestionItems="{transportation>ShipFromList}"
-                                        type="Text">
+                                        value="{transportation>ShipFromDetails/Description}"
+                                        required="true" maxSuggestionWidth="auto"
+                                        placeholder="{i18n>enterShipFromLocation}"
+                                        showSuggestion="false" showValueHelp="true"
+                                        suggestionItems="{/ShippingLocations}"
+                                        type="Text"
+                                        suggestionFilterProperty1="Region"
+                                        suggestionFilterPropertyValue1="{transportation>Region}">
                     <pm:suggestionItems>
-                        <core:ListItem key="{transportation>ShippingLocationKey}" text="{transportation>Description}"
-                                       additionalText="{transportation>ShippingLocationKey}"/>
+                        <core:ListItem key="{ShippingLocationKey}" text="{Description}"
+                                       additionalText="{ShippingLocationKey}"/>
                     </pm:suggestionItems>
                 </pm:InputWithSearchHelp>
             </f:content>
         </f:SimpleForm>
+
         <buttons>
             <Button text="Submit" press="onNewTransportationSubmit"/>
             <Button text="Cancel" press="onNewTransportationCancel"/>
-            <Button text="Messages" press="onNewTransportationMessagePopover"/>
+            <Button icon="sap-icon://message-popup" text="{=${messageLog>/}.length}" press="onToggleMessagePopover"
+                    visible="{= (${messageLog>/}.length !== 0)}"/>
         </buttons>
     </Dialog>
 </core:FragmentDefinition>

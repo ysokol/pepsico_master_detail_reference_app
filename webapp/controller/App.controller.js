@@ -7,33 +7,9 @@ sap.ui.define([
 	return BaseController.extend("com.pepsico.dev.reference.masterDetailTransactional.controller.App", {
 
 		onInit: function() {
-			var oViewModel,
-				fnSetAppNotBusy,
-				iOriginalBusyDelay = this.getView().getBusyIndicatorDelay();
-
-			oViewModel = new JSONModel({
-				busy: true,
-				delay: 0,
-				layout: "OneColumn",
-				previousLayout: "",
-				actionButtonsInfo: {
-					midColumn: {
-						fullScreen: false
-					}
-				}
-			});
-			this.setModel(oViewModel, "appView");
-
-			fnSetAppNotBusy = function() {
-				oViewModel.setProperty("/busy", false);
-				oViewModel.setProperty("/delay", iOriginalBusyDelay);
-			};
-
-			// since then() has no "reject"-path attach to the MetadataFailed-Event to disable the busy indicator in case of an error
-			this.getOwnerComponent().getModel().metadataLoaded().then(fnSetAppNotBusy);
-			this.getOwnerComponent().getModel().attachMetadataFailed(fnSetAppNotBusy);
-
-			// apply content density mode to root view
+			sap.ui.core.BusyIndicator.show(0);
+			this.getOwnerComponent().getModel().metadataLoaded().then(() => sap.ui.core.BusyIndicator.hide());
+			this.getOwnerComponent().getModel().attachMetadataFailed(() => sap.ui.core.BusyIndicator.hide());
 			this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
 		}
 

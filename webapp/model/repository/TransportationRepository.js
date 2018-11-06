@@ -41,13 +41,14 @@ sap.ui.define([
                             "$expand": "TransportationItemDetails,ShippingLocationDetails,ShippingLocationDetails1,TruckDetails"
                         }
                     })
-                    .then(oData => fnResolve(this._convertToTransportationDetails(oData)));
+                    .then(oData => fnResolve(this._convertToTransportationDetails(oData)))
+                    .catch((oException) => fnReject(oException));
             });
         },
         updateODataModel: function (oTransportationDetails) {
-            const aTransportationHeaderProps = Object.getOwnPropertyNames(models.getTransportationViewModelInitialState().TransportationDetails.TransportationHeader);
-            const aTransportationItemProps = Object.getOwnPropertyNames(models.getTransportationViewModelInitialState().NewTransportationItemDetails);
-            this._updateODataEntityProps(oTransportationDetails.TransportationHeader, aTransportationHeaderProps);
+            const aTransportationHeaderProps = Object.getOwnPropertyNames(models.createTransportationDetails());
+            const aTransportationItemProps = Object.getOwnPropertyNames(models.createTransportationItemDetails());
+            this._updateODataEntityProps(oTransportationDetails, aTransportationHeaderProps);
 
             if (oTransportationDetails.TransportationItems) {
                 oTransportationDetails.TransportationItems.forEach(oItem =>
@@ -63,8 +64,8 @@ sap.ui.define([
                 );
         },
         refreshFromODataModelCache: function (oTransportationDetails) {
-            oTransportationDetails.TransportationHeader = this._addLocalODataPathToEntity(
-                this._oODataModel.getProperty(oTransportationDetails.TransportationHeader.__metadata.localODataPath));
+            oTransportationDetails = this._addLocalODataPathToEntity(
+                this._oODataModel.getProperty(oTransportationDetails.__metadata.localODataPath));
 
             if (oTransportationDetails.TransportationItems) {
                 oTransportationDetails.TransportationItems.forEach(oItem =>
@@ -118,17 +119,22 @@ sap.ui.define([
         _convertToTransportationDetails: function (oData) {
             debugger;
             let oTransportationDetails = {};
-            oTransportationDetails.TransportationHeader = this._copyObjectPlainProps(oData);
-            oTransportationDetails.TransportationHeader.__metadata = oData.__metadata;
-            oTransportationDetails.TransportationHeader.ShipFromDetails = oData.ShippingLocationDetails || {Description: ""};
-            oTransportationDetails.TransportationHeader.ShipToDetails = oData.ShippingLocationDetails1 || {Description: ""};
-            oTransportationDetails.TransportationHeader.TruckDetails = oData.TruckDetails || {Description: ""};
-            oTransportationDetails.TransportationHeader = this._addLocalODataPathToEntity(oTransportationDetails.TransportationHeader);
+            oTransportationDetails = this._copyObjectPlainProps(oData);
+            oTransportationDetails.__metadata = oData.__metadata;
+            oTransportationDetails.ShipFromDetails = oData.ShippingLocationDetails || {Description: ""};
+            oTransportationDetails.ShipToDetails = oData.ShippingLocationDetails1 || {Description: ""};
+            oTransportationDetails.TruckDetails = oData.TruckDetails || {Description: ""};
+            oTransportationDetails = this._addLocalODataPathToEntity(oTransportationDetails);
 
             if (oData.TransportationItemDetails && oData.TransportationItemDetails.results) {
                 oTransportationDetails.TransportationItems = oData.TransportationItemDetails.results;
-                oTransportationDetails.TransportationItems.forEach(item =>
-                    item.__metadata.localODataPath = "/" + item.__metadata.uri.split("/").pop()
+                oTransportationDetails.TransportationItems.forEach(item => {
+                        item.__metadata.localODataPath = "/" + item.__metadata.uri.split("/").pop();
+                        item.MaterialDetails = {
+                            Description: item.Description
+                        };
+                    }
+
                 );
             }
 

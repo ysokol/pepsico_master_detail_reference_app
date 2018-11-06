@@ -18,10 +18,14 @@ sap.ui.define([
         constructor: function ({
                                    oTransportationRepository = undefined,
                                    oTransportationViewModel = undefined,
+	                               oTransportationItemService = undefined,
+                                   oI18nModel = undefined,
                                } = {}) {
             Object.apply(this);
             this._oTranportationRepository = oTransportationRepository;
             this._oTransportationViewModel = oTransportationViewModel;
+	        this._oTransportationItemService = oTransportationItemService;
+            this._oI18nModel = oI18nModel;
             this._oMessageManager = sap.ui.getCore().getMessageManager();
         },
         init: function () {
@@ -34,7 +38,33 @@ sap.ui.define([
                 this._oTransportationViewModel.getProperty("/TransportationDetails"));
             return this._oTranportationRepository.hasPendingChanges();
         },
+        validateTransportation: function () {
+            this._oMessageManager.removeAllMessages();
+            let bValidationResult = true;
+            if (this._oTransportationViewModel.getProperty("/TransportationDetails/ShipTo") &&
+                this._oTransportationViewModel.getProperty("/TransportationDetails/ShipTo") ===
+                this._oTransportationViewModel.getProperty("/TransportationDetails/ShipFrom")) {
+                this._oMessageManager.addMessages(
+                    new sap.ui.core.message.Message({
+                        message: this._getI18nText("shipToShouldNotBeEqualShipFrom"),
+                        type: sap.ui.core.MessageType.Error,
+                        target: "/TransportationDetails/ShipToDetails/Description",
+                        processor: this._oTransportationViewModel
+                    })
+                );
+                bValidationResult = false;
+            }
+	        this._oTransportationViewModel.getProperty("/TransportationDetails/TransportationItems")
+		        .forEach((oItem, iIndex) => {
+		        	if (!this._oTransportationItemService.validateTransportationItem(
+					        "/TransportationDetails/TransportationItems/" + iIndex)) {
+				        bValidationResult = false;
+			        }
+		        });
+	        return bValidationResult;
+        },
         submitChanges: function() {
+	        this._oMessageManager.removeAllMessages();
             this._oTranportationRepository.updateODataModel(
                 this._oTransportationViewModel.getProperty("/TransportationDetails"));
             return new Promise((fnResolve, fnReject) =>
@@ -46,20 +76,20 @@ sap.ui.define([
             );
         },
         resetChanges: function() {
+	        this._oMessageManager.removeAllMessages();
             this._oTranportationRepository.resetChanges();
-            /*let oTransportationDetails = this._oTransportationViewModel.getProperty("/TransportationDetails");
-            this._oTranportationRepository.refreshFromODataModelCache(oTransportationDetails);
-            this._oTransportationViewModel.setProperty("/TransportationDetails", oTransportationDetails);
-            this._oTransportationViewModel.setProperty("/TransportationDetailsViewProps/IsEditMode", false);*/
             return new Promise((fnResolve, fnReject) =>
                 this._oTranportationRepository.readTransportation(
-                    this._oTransportationViewModel.getProperty("/TransportationDetails/TransportationHeader/__metadata/localODataPath"))
+                    this._oTransportationViewModel.getProperty("/TransportationDetails/__metadata/localODataPath"))
                     .then(oTransportationDetails => {
                         this._oTransportationViewModel.setProperty("/TransportationDetails", oTransportationDetails);
                         this._oTransportationViewModel.setProperty("/TransportationDetailsViewProps/IsEditMode", false);
                         fnResolve(oTransportationDetails);
                     })
             );
+        },
+        _getI18nText: function(sKey, aArgs) {
+            return this._oI18nModel.getResourceBundle().getText(sKey, aArgs);
         },
     });
     return TransportationEdit;
